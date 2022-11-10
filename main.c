@@ -6,7 +6,7 @@
 /*   By: thepaqui <thepaqui@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/07 14:23:05 by thepaqui          #+#    #+#             */
-/*   Updated: 2022/11/09 11:41:35 by thepaqui         ###   ########.fr       */
+/*   Updated: 2022/11/10 18:52:21 by thepaqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "libft.h"
@@ -38,25 +38,65 @@
 
 //checks
 #define OK 0
-#define NB_TESTS 16
-#define ISALPHA ft_check_isalpha()
-#define ISDIGIT ft_check_isdigit()
-#define ISALNUM ft_check_isalnum()
-#define ISASCII ft_check_isascii()
-#define ISPRINT ft_check_isprint()
-#define STRLEN ft_check_strlen()
-#define MEMSET ft_check_memset()
-#define BZERO ft_check_bzero()
-#define MEMCPY ft_check_memcpy()
-#define MEMMOV ft_check_memmove()
+#define KO 1
+#define NB_TESTS 34
 
-#define TOUPPER ft_check_toupper()
-#define TOLOWER ft_check_tolower()
+//ascii and strlen 6
+#define ISALPHA ft_check_isalpha
+#define ISDIGIT ft_check_isdigit
+#define ISALNUM ft_check_isalnum
+#define ISASCII ft_check_isascii
+#define ISPRINT ft_check_isprint
+#define STRLEN ft_check_strlen
 
-#define PUTCHAR_FD ft_check_putchar_fd()
-#define PUTSTR_FD ft_check_putstr_fd()
-#define PUTENDL_FD ft_check_putendl_fd()
-#define PUTNBR_FD ft_check_putnbr_fd()
+//str and mem basic fts 8
+#define MEMSET ft_check_memset
+#define BZERO ft_check_bzero
+#define MEMCPY ft_check_memcpy
+#define MEMMOV ft_check_memmove
+#define STRLCPY ft_check_strlcpy
+#define STRLCAT ft_check_strlcat
+#define CALLOC placeholder
+#define STRDUP placeholder
+
+//char case 2
+#define TOUPPER ft_check_toupper
+#define TOLOWER ft_check_tolower
+
+//str and mem search and comp 6
+#define STRCHR ft_check_strchr
+#define STRRCHR ft_check_strrchr
+#define STRNCMP ft_check_strncmp
+#define MEMCHR ft_check_memchr
+#define MEMCMP ft_check_memcmp
+#define STRNSTR ft_check_strnstr
+
+//str and int manipulation 2
+#define ATOI ft_check_atoi
+#define ITOA placeholder
+
+//str manipulation 6
+#define SUBSTR placeholder
+#define STRJOIN placeholder
+#define STRTRIM placeholder
+#define SPLIT placeholder
+#define STRMAPI placeholder
+#define STRITERI placeholder
+
+//text display 4
+#define PUTCHAR_FD ft_check_putchar_fd
+#define PUTSTR_FD ft_check_putstr_fd
+#define PUTENDL_FD ft_check_putendl_fd
+#define PUTNBR_FD ft_check_putnbr_fd
+
+//list basic fts
+
+int	placeholder(void)
+{
+	SET_STYLE(BOLD, WHITE);
+	printf("This is a placeholder! :P\n");
+	return (OK);
+}
 
 int	ft_print_error(int code)
 {
@@ -369,7 +409,7 @@ int	ft_check_strlen(void)
 		SET_STYLE(REGULAR, RED);
 		err++;
 	}
-	printf("\"%s\" has a length of %lu.\n", str1, res);
+	printf("\"%s\" has a length of %zu.\n", str1, res);
 	res = ft_strlen(str2);
 	if (res == 1)
 		SET_STYLE(REGULAR, GREEN);
@@ -378,7 +418,7 @@ int	ft_check_strlen(void)
 		SET_STYLE(REGULAR, RED);
 		err++;
 	}
-	printf("\"%s\" has a length of %lu.\n", str2, res);
+	printf("\"%s\" has a length of %zu.\n", str2, res);
 	res = ft_strlen(str3);
 	if (res == 7)
 		SET_STYLE(REGULAR, GREEN);
@@ -387,7 +427,7 @@ int	ft_check_strlen(void)
 		SET_STYLE(REGULAR, RED);
 		err++;
 	}
-	printf("\"%s\" has a length of %lu.\n", str3, res);
+	printf("\"%s\" has a length of %zu.\n", str3, res);
 	res = ft_strlen(str4);
 	if (res == 42)
 		SET_STYLE(REGULAR, GREEN);
@@ -396,7 +436,7 @@ int	ft_check_strlen(void)
 		SET_STYLE(REGULAR, RED);
 		err++;
 	}
-	printf("\"%s\" has a length of %lu.\n", str4, res);
+	printf("\"%s\" has a length of %zu.\n", str4, res);
 	RESET_STYLE;
 	return (err);
 }
@@ -529,6 +569,50 @@ int	ft_check_memmove(void)
 	return (OK);
 }
 
+#define STRLCPY_SRC "abcde"
+#define STRLCPY_SRC_LEN strlen(STRLCPY_SRC) + 1
+#define STRLCPY_DST "OOOOOOOOO"
+#define STRLCPY_DST_LEN 10
+#define STRLCPY_BYTES 7
+int	ft_check_strlcpy(void)
+{
+	const char	src[STRLCPY_SRC_LEN] = STRLCPY_SRC;
+	char		dest1[STRLCPY_DST_LEN] = STRLCPY_DST;
+	char		dest2[STRLCPY_DST_LEN] = STRLCPY_DST;
+	size_t		should;
+	size_t		is;
+
+	should = strlcpy(dest1, src, STRLCPY_BYTES);
+	is = ft_strlcpy(dest2, src, STRLCPY_BYTES);
+	SET_STYLE(REGULAR, CYAN);
+	printf("strlcpy :\t\t\"%s\"\n", dest1);
+	printf("strlcpy returns :	%zu\n\n", should);
+	SET_STYLE(REGULAR, GREEN);
+	printf("ft_strlcpy :\t\t\"%s\"\n", dest2);
+	printf("ft_strlcpy returns :	%zu\n", is);
+	return (OK);
+}
+
+#define STRLCAT_SRC "123456789"
+#define STRLCAT_SRC_LEN strlen(STRLCAT_SRC) + 1
+#define STRLCAT_DST "src = "
+#define STRLCAT_DST_LEN 20
+#define STRLCAT_BYTES 13
+int	ft_check_strlcat(void)
+{
+	char	src[STRLCAT_SRC_LEN] = STRLCAT_SRC;
+	char	dest1[STRLCAT_DST_LEN] = STRLCAT_DST;
+	char	dest2[STRLCAT_DST_LEN] = STRLCAT_DST;
+
+	SET_STYLE(REGULAR, CYAN);
+	printf("src is :\t\"%s\"\n", src);
+	printf("dest is :\t\"%s\"\n\n", dest1);
+	SET_STYLE(REGULAR, GREEN);
+	printf("strlcat returns :\t%zu\t\"%s\"\n", strlcat(dest1, src, STRLCAT_BYTES), dest1);
+	printf("ft_strlcat returns :\t%zu\t\"%s\"\n", ft_strlcat(dest2, src, STRLCAT_BYTES), dest2);
+	return (OK);
+}
+
 #define TOUPPER_STR "Ceci`est@un[PUTAIN{de.TeST!"
 #define TOUPPER_STRLEN strlen(TOUPPER_STR) + 1
 int	ft_check_toupper(void)
@@ -561,6 +645,178 @@ int	ft_check_tolower(void)
 	SET_STYLE(REGULAR, GREEN);
 	printf("\"%s\"\n", str);
 	return (OK);
+}
+
+#define STRCHR_STR "I have a bad case of diarrhea."
+#define STRCHR_C 'a'
+int	ft_check_strchr(void)
+{
+	char	str[] = STRCHR_STR;
+	char	c = STRCHR_C;
+	char	*res1;
+	char	*res2;
+
+	SET_STYLE(REGULAR, CYAN);
+	printf("str is\t\"%s\"\nc is \t\'%c\'\n\n", str, c);
+	SET_STYLE(REGULAR, GREEN);
+	res1 = strchr(str, (int)c);
+	printf("strchr returns\t\t\"%s\" %p\n", res1, res1);
+	res2 = ft_strchr(str, (int)c);
+	if (res2 != res1)
+		SET_STYLE(REGULAR, RED);
+	printf("ft_strchr returns\t\"%s\" %p\n", res2, res2);
+	if (res1 == res2)
+		return (OK);
+	else
+		return (KO);
+}
+
+#define STRRCHR_STR "I have a VERY bad case of diarrhea."
+#define STRRCHR_C 'd'
+int	ft_check_strrchr(void)
+{
+	char	str[] = STRRCHR_STR;
+	char	c = STRRCHR_C;
+	char	*res1;
+	char	*res2;
+
+	SET_STYLE(REGULAR, CYAN);
+	printf("str is\t\"%s\"\nc is \t\'%c\'\n\n", str, c);
+	SET_STYLE(REGULAR, GREEN);
+	res1 = strrchr(str, (int)c);
+	printf("strrchr returns\t\t\"%s\" %p\n", res1, res1);
+	res2 = ft_strrchr(str, (int)c);
+	if (res2 != res1)
+		SET_STYLE(REGULAR, RED);
+	printf("ft_strrchr returns\t\"%s\" %p\n", res2, res2);
+	if (res1 == res2)
+		return (OK);
+	else
+		return (KO);
+}
+
+#define STRNCMP_STR1 "Music makes you lose control"
+#define STRNCMP_STR2 "Music makes OH GOD NO"
+#define STRNCMP_BYTES 13
+int	ft_check_strncmp(void)
+{
+	char	s1[] = STRNCMP_STR1;
+	char	s2[] = STRNCMP_STR2;
+	int		res1;
+	int		res2;
+
+	SET_STYLE(REGULAR, CYAN);
+	printf("s1 is\t\"%s\"\n", s1);
+	printf("s2 is\t\"%s\"\n\n", s2);
+	res1 = strncmp(s1, s2, STRNCMP_BYTES);
+	res2 = ft_strncmp(s1, s2, STRNCMP_BYTES);
+	SET_STYLE(REGULAR, GREEN);
+	printf("strncmp returns\t\t%d\n", res1);
+	if (res2 != res1)
+		SET_STYLE(REGULAR, RED);
+	printf("ft_strncmp returns\t%d\n", res2);
+	if (res1 != res2)
+		return (KO);
+	else
+		return (OK);
+}
+
+#define MEMCHR_STR "Anything for YOU! M. Obama!"
+#define MEMCHR_C '!'
+#define MEMCHR_BYTES 28
+int	ft_check_memchr(void)
+{
+	char	str[] = MEMCHR_STR;
+	char	c = MEMCHR_C;
+	char	*res1;
+	char	*res2;
+
+	SET_STYLE(REGULAR, CYAN);
+	printf("str is\t\"%s\"\nc is \t\'%c\'\n\n", str, c);
+	SET_STYLE(REGULAR, GREEN);
+	res1 = (char *)memchr((void *)str, (int)c, MEMCHR_BYTES);
+	printf("memchr returns\t\t\"%s\" %p\n", res1, res1);
+	res2 = (char *)ft_memchr((void *)str, (int)c, MEMCHR_BYTES);
+	if (res2 != res1)
+		SET_STYLE(REGULAR, RED);
+	printf("ft_memchr returns\t\"%s\" %p\n", res2, res2);
+	if (res1 == res2)
+		return (OK);
+	else
+		return (KO);
+}
+
+#define MEMCMP_STR1 "Music Makes \xccyou lose control"
+#define MEMCMP_STR2 "Music Makes \xffOH GOD NO AAAAAA"
+#define MEMCMP_BYTES 30
+int	ft_check_memcmp(void)
+{
+	unsigned char	s1[] = MEMCMP_STR1;
+	unsigned char	s2[] = MEMCMP_STR2;
+	int				res1;
+	int				res2;
+
+	SET_STYLE(REGULAR, CYAN);
+	printf("s1 is\t\"%s\"\n", s1);
+	printf("s2 is\t\"%s\"\n\n", s2);
+	res1 = memcmp(s1, s2, MEMCMP_BYTES);
+	res2 = ft_memcmp(s1, s2, MEMCMP_BYTES);
+	SET_STYLE(REGULAR, GREEN);
+	printf("memcmp returns\t\t%d\n", res1);
+	if (res2 != res1)
+		SET_STYLE(REGULAR, RED);
+	printf("ft_memcmp returns\t%d\n", res2);
+	if (res1 != res2)
+		return (KO);
+	else
+		return (OK);
+}
+
+#define STRNSTR_STR "Fun fact on Vaporeon! >:}"
+#define STRNSTR_SUB "on"
+#define STRNSTR_BYTES 21
+int	ft_check_strnstr(void)
+{
+	char	str[] = STRNSTR_STR;
+	char	to_find[] = STRNSTR_SUB;
+	char	*res1;
+	char	*res2;
+
+	SET_STYLE(REGULAR, CYAN);
+	printf("str is :\t\"%s\"\n", str);
+	printf("to_find is :\t\"%s\"\n\n", to_find);
+	SET_STYLE(REGULAR, GREEN);
+	res1 = strnstr(str, to_find, STRNSTR_BYTES);
+	printf("strnstr returns\t\t%p \"%s\"\n", res1, res1);
+	res2 = ft_strnstr(str, to_find, STRNSTR_BYTES);
+	if (res2 != res1)
+		SET_STYLE(REGULAR, RED);
+	printf("ft_strnstr returns\t%p \"%s\"\n", res2, res2);
+	if (res1 != res2)
+		return (KO);
+	else
+		return (OK);
+}
+
+int	ft_check_atoi(void)
+{
+	char	str[] = "\v \f \r \n \t +00000020150oo0";
+	int		res1;
+	int		res2;
+
+	SET_STYLE(REGULAR, CYAN);
+	printf("str is\t\"%s\"\n\n", str);
+	SET_STYLE(REGULAR, GREEN);
+	res1 = atoi(str);
+	printf("atoi returns\t%d\n", atoi(str));
+	res2 = ft_atoi(str);
+	if (res2 != res1)
+		SET_STYLE(REGULAR, RED);
+	printf("ft_atoi returns\t%d\n", ft_atoi(str));
+	if (res1 != res2)
+		return (KO);
+	else
+		return (OK);
 }
 
 int	ft_check_putchar_fd(void)
@@ -685,50 +941,90 @@ void	ft_print_final_result(int nb)
 	RESET_STYLE;
 }
 
-int	main(int argc, char **argv)
+int	main(void)
 {
-	(void)argc;
-	(void)argv;
-	int	nb_succ;
+	int		nb_succ;
+	int		(*ft_check[NB_TESTS])(void);
+	char	*titles[NB_TESTS];
+	int		i;
 
+	ft_check[0] = ISALPHA;
+	ft_check[1] = ISDIGIT;
+	ft_check[2] = ISALNUM;
+	ft_check[3] = ISASCII;
+	ft_check[4] = ISPRINT;
+	ft_check[5] = STRLEN;
+	ft_check[6] = MEMSET;
+	ft_check[7] = BZERO;
+	ft_check[8] = MEMCPY;
+	ft_check[9] = MEMMOV;
+	ft_check[10] = STRLCPY;
+	ft_check[11] = STRLCAT;
+	ft_check[12] = TOUPPER;
+	ft_check[13] = TOLOWER;
+	ft_check[14] = STRCHR;
+	ft_check[15] = STRRCHR;
+	ft_check[16] = STRNCMP;
+	ft_check[17] = MEMCHR;
+	ft_check[18] = MEMCMP;
+	ft_check[19] = STRNSTR;
+	ft_check[20] = ATOI;
+	ft_check[21] = CALLOC;
+	ft_check[22] = STRDUP;
+	ft_check[23] = SUBSTR;
+	ft_check[24] = STRJOIN;
+	ft_check[25] = STRTRIM;
+	ft_check[26] = SPLIT;
+	ft_check[27] = ITOA;
+	ft_check[28] = STRMAPI;
+	ft_check[29] = STRITERI;
+	ft_check[30] = PUTCHAR_FD;
+	ft_check[31] = PUTSTR_FD;
+	ft_check[32] = PUTENDL_FD;
+	ft_check[33] = PUTNBR_FD;
+	titles[0] = "ISALPHA";
+	titles[1] = "ISDIGIT";
+	titles[2] = "ISALNUM";
+	titles[3] = "ISASCII";
+	titles[4] = "ISPRINT";
+	titles[5] = "STRLEN";
+	titles[6] = "MEMSET";
+	titles[7] = "BZERO";
+	titles[8] = "MEMCPY";
+	titles[9] = "MEMMOV";
+	titles[10] = "STRLCPY";
+	titles[11] = "STRLCAT";
+	titles[12] = "TOUPPER";
+	titles[13] = "TOLOWER";
+	titles[14] = "STRCHR";
+	titles[15] = "STRRCHR";
+	titles[16] = "STRNCMP";
+	titles[17] = "MEMCHR";
+	titles[18] = "MEMCMP";
+	titles[19] = "STRNSTR";
+	titles[20] = "ATOI";
+	titles[21] = "CALLOC";
+	titles[22] = "STRDUP";
+	titles[23] = "SUBSTR";
+	titles[24] = "STRJOIN";
+	titles[25] = "STRTRIM";
+	titles[26] = "SPLIT";
+	titles[27] = "ITOA";
+	titles[28] = "STRMAPI";
+	titles[29] = "STRITERI";
+	titles[30] = "PUTCHAR_FD";
+	titles[31] = "PUTSTR_FD";
+	titles[32] = "PUTENDL_FD";
+	titles[33] = "PUTNBR_FD";
 	nb_succ = 0;
 	SET_STYLE(REGULAR, CYAN);
 	printf("There are %d tests.\n", NB_TESTS);
-	ft_print_title("ISALPHA");
-	nb_succ += ft_print_check_result(ISALPHA);
-	ft_print_title("ISDIGIT");
-	nb_succ += ft_print_check_result(ISDIGIT);
-	ft_print_title("ISALNUM");
-	nb_succ += ft_print_check_result(ISALNUM);
-	ft_print_title("ISASCII");
-	nb_succ += ft_print_check_result(ISASCII);
-	ft_print_title("ISPRINT");
-	nb_succ += ft_print_check_result(ISPRINT);
-	ft_print_title("STRLEN");
-	nb_succ += ft_print_check_result(STRLEN);
-	ft_print_title("MEMSET");
-	nb_succ += ft_print_check_result(MEMSET);
-	ft_print_title("BZERO");
-	nb_succ += ft_print_check_result(BZERO);
-	ft_print_title("MEMCPY");
-	nb_succ += ft_print_check_result(MEMCPY);
-	ft_print_title("MEMMOV");
-	nb_succ += ft_print_check_result(MEMMOV);
-	//strlcpy
-	//strlcat
-	ft_print_title("TOUPPER");
-	nb_succ += ft_print_check_result(TOUPPER);
-	ft_print_title("TOLOWER");
-	nb_succ += ft_print_check_result(TOLOWER);
-
-	ft_print_title("PUTCHAR_FD");
-	nb_succ += ft_print_check_result(PUTCHAR_FD);
-	ft_print_title("PUTSTR_FD");
-	nb_succ += ft_print_check_result(PUTSTR_FD);
-	ft_print_title("PUTENDL_FD");
-	nb_succ += ft_print_check_result(PUTENDL_FD);
-	ft_print_title("PUTNBR_FD");
-	nb_succ += ft_print_check_result(PUTNBR_FD);
+	i = -1;
+	while (++i < NB_TESTS)
+	{
+		ft_print_title(titles[i]);
+		nb_succ += ft_print_check_result((*ft_check[i])());
+	}
 	ft_print_final_result(nb_succ);
 	return (0);
 }
