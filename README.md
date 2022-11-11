@@ -9,10 +9,10 @@ I don't plan on updating this after I validate this project, but feel free to ta
 
 HOW TO USE:
 
-Compile this main with your own libft.a and run ./a.out
+Compile this main with your own libft.a and run your program.
 
-Running ./a.out will test everything (bonus functions included)
+Running the program without argumants will test everything (bonus functions included).
 
-Running it with a test code will only test the function associated with the code.
+Running it with a test code as an argument will only test the function associated with the code.
 
-To know the test codes, check out test_codes.txt
+To know the test codes, check out test_codes.txt.
