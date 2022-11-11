@@ -15,4 +15,4 @@ Running ./a.out will test everything (bonus functions included)
 
 Running it with a test code will only test the function associated with the code.
 
-To know the codes, check out test_codes.txt
+To know the test codes, check out test_codes.txt
