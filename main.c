@@ -6,7 +6,7 @@
 /*   By: thepaqui <thepaqui@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/07 14:23:05 by thepaqui          #+#    #+#             */
-/*   Updated: 2022/11/10 18:52:21 by thepaqui         ###   ########.fr       */
+/*   Updated: 2022/11/11 18:20:42 by thepaqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "libft.h"
@@ -15,11 +15,12 @@
 #include <strings.h>
 
 //error codes
-#define NB_ERR 4
-#define NOARG 0
+#define NB_ERR 5
+#define NOTEST 0
 #define EXTRARG 1
 #define MALLOCFAIL 2
 #define WRONG_FD 3
+#define NOTESTCODES 4
 
 //text style
 #define REGULAR 0
@@ -56,8 +57,8 @@
 #define MEMMOV ft_check_memmove
 #define STRLCPY ft_check_strlcpy
 #define STRLCAT ft_check_strlcat
-#define CALLOC placeholder
-#define STRDUP placeholder
+#define CALLOC ft_check_calloc
+#define STRDUP ft_check_strdup
 
 //char case 2
 #define TOUPPER ft_check_toupper
@@ -73,13 +74,13 @@
 
 //str and int manipulation 2
 #define ATOI ft_check_atoi
-#define ITOA placeholder
+#define ITOA ft_check_itoa
 
 //str manipulation 6
-#define SUBSTR placeholder
-#define STRJOIN placeholder
-#define STRTRIM placeholder
-#define SPLIT placeholder
+#define SUBSTR ft_check_substr
+#define STRJOIN ft_check_strjoin
+#define STRTRIM ft_check_strtrim
+#define SPLIT ft_check_split
 #define STRMAPI placeholder
 #define STRITERI placeholder
 
@@ -98,17 +99,41 @@ int	placeholder(void)
 	return (OK);
 }
 
+int	ft_print_error(int code);
+
+#define TEST_CODES "test_codes.txt"
+int	ft_print_test_codes(int code)
+{
+	FILE	*f;
+	char	c;
+
+	f = fopen(TEST_CODES, "r");
+	if (!f)
+		return (ft_print_error(NOTESTCODES));
+	c = fgetc(f);
+	while (c != EOF)
+	{
+		printf("%c", c);
+		c = fgetc(f);
+	}
+	fclose(f);
+	return (code + 1);
+}
+
 int	ft_print_error(int code)
 {
 	char	*err_msgs[NB_ERR];
 
-	err_msgs[NOARG] = "No argument";
+	err_msgs[NOTEST] = "This test doesn't exist";
 	err_msgs[EXTRARG] = "Too many arguments";
 	err_msgs[MALLOCFAIL] = "Memory allocation failed";
 	err_msgs[WRONG_FD] = "Wrong file descriptor";
+	err_msgs[NOTESTCODES] = "Test codes file couldn't be opened";
 	SET_STYLE(BOLD, RED);
 	printf("ERROR: %s.\n", err_msgs[code]);
 	RESET_STYLE;
+	if (code == NOTEST || code == EXTRARG)
+		return (ft_print_test_codes(code));
 	return (code + 1);
 }
 
@@ -451,9 +476,15 @@ int	ft_check_memset(void)
 	char	*str2;
 
 	str1 = strdup(MEMSET_STR);
-	str2 = strdup(MEMSET_STR);
-	if (!str1 || !str2)
+	if (!str1)
 		return (ft_print_error(MALLOCFAIL));
+	str2 = strdup(MEMSET_STR);
+	if (!str2)
+	{
+		free(str1);
+		ft_leaks_check();
+		return (ft_print_error(MALLOCFAIL));
+	}
 	SET_STYLE(REGULAR, CYAN);
 	printf("str1: \"%s\"\t\tstr2: \"%s\"\n", str1, str2);
 	SET_STYLE(REGULAR, CYAN);
@@ -478,9 +509,15 @@ int	ft_check_bzero(void)
 	char	*str2;
 
 	str1 = strdup(BZERO_STR);
-	str2 = strdup(BZERO_STR);
-	if (!str1 || !str2)
+	if (!str1)
 		return (ft_print_error(MALLOCFAIL));
+	str2 = strdup(BZERO_STR);
+	if (!str2)
+	{
+		free(str1);
+		ft_leaks_check();
+		return (ft_print_error(MALLOCFAIL));
+	}
 	SET_STYLE(REGULAR, CYAN);
 	printf("str1: \"%s\"\tstr2: \"%s\"\n", str1, str2);
 	SET_STYLE(REGULAR, CYAN);
@@ -507,9 +544,15 @@ int	ft_check_memcpy(void)
 	char	*dst2;
 
 	src = strdup(MEMCPY_STR);
-	dst = malloc(sizeof(*dst) * MEMCPY_STRLEN);
-	if (!src || !dst)
+	if (!src)
 		return (ft_print_error(MALLOCFAIL));
+	dst = malloc(sizeof(*dst) * MEMCPY_STRLEN);
+	if (!dst)
+	{
+		free(src);
+		ft_leaks_check();
+		return (ft_print_error(MALLOCFAIL));
+	}
 	memcpy(dst, src, MEMCPY_BYTES);
 	SET_STYLE(REGULAR, CYAN);
 	printf("MEMCPY\n\n");
@@ -518,9 +561,15 @@ int	ft_check_memcpy(void)
 	free(src);
 	free(dst);
 	src2 = strdup(MEMCPY_STR);
-	dst2 = malloc(sizeof(*dst2) * MEMCPY_STRLEN);
-	if (!src2 || !dst2)
+	if (!src2)
 		return (ft_print_error(MALLOCFAIL));
+	dst2 = malloc(sizeof(*dst2) * MEMCPY_STRLEN);
+	if (!dst2)
+	{
+		free(src2);
+		ft_leaks_check();
+		return (ft_print_error(MALLOCFAIL));
+	}
 	ft_memcpy(dst2, src2, MEMCPY_BYTES);
 	SET_STYLE(REGULAR, CYAN);
 	printf("FT_MEMCPY\n\n");
@@ -544,9 +593,9 @@ int	ft_check_memmove(void)
 	char	*dst2;
 
 	src = strdup(MEMMOV_STR);
-	dst = src + MEMMOV_OFFSET;
-	if (!src || !dst)
+	if (!src)
 		return (ft_print_error(MALLOCFAIL));
+	dst = src + MEMMOV_OFFSET;
 	SET_STYLE(REGULAR, CYAN);
 	printf("MEMMOV\n\n");
 	printf("src is\t\"%s\"\n", src);
@@ -555,9 +604,9 @@ int	ft_check_memmove(void)
 	printf("dst is\t\"%s\"\n\n", dst);
 	free(src);
 	src2 = strdup(MEMMOV_STR);
-	dst2 = src2 + MEMMOV_OFFSET;
-	if (!src2 || !dst2)
+	if (!src2)
 		return (ft_print_error(MALLOCFAIL));
+	dst2 = src2 + MEMMOV_OFFSET;
 	SET_STYLE(REGULAR, CYAN);
 	printf("FT_MEMMOV\n\n");
 	printf("src2 is\t\"%s\"\n", src2);
@@ -648,7 +697,7 @@ int	ft_check_tolower(void)
 }
 
 #define STRCHR_STR "I have a bad case of diarrhea."
-#define STRCHR_C 'a'
+#define STRCHR_C 'b'
 int	ft_check_strchr(void)
 {
 	char	str[] = STRCHR_STR;
@@ -819,6 +868,231 @@ int	ft_check_atoi(void)
 		return (OK);
 }
 
+#define CALLOC_BYTES 126
+#define CALLOC_COUNT 2
+int	ft_check_calloc(void)
+{
+	char	*mem1;
+	char	*mem2;
+	int		match;
+
+	SET_STYLE(REGULAR, CYAN);
+	printf("Allocating memory for %d objects ", CALLOC_COUNT);
+	printf("of %d bytes each\n\n", CALLOC_BYTES);
+	mem1 = (char *)calloc(CALLOC_COUNT, CALLOC_BYTES);
+	if (!mem1)
+		return (ft_print_error(MALLOCFAIL));
+	mem2 = (char *)ft_calloc(CALLOC_COUNT, CALLOC_BYTES);
+	if (!mem2)
+	{
+		free(mem1);
+		ft_leaks_check();
+		return (ft_print_error(MALLOCFAIL));
+	}
+	match = OK;
+	if (memcmp(mem1, mem2, CALLOC_BYTES * CALLOC_COUNT))
+	{
+		match = KO;
+		SET_STYLE(REGULAR, RED);
+		printf("memcmp says the bytes don't match!\n");
+	}
+	else
+	{
+		SET_STYLE(REGULAR, GREEN);
+		printf("memcmp says the bytes match!\n");
+	}
+	free(mem1);
+	free(mem2);
+	ft_leaks_check();
+	return (match);
+}
+
+#define STRDUP_STR "Money can be exchanged for goods and services."
+int	ft_check_strdup(void)
+{
+	char	src[] = STRDUP_STR;
+	char	*res1;
+	char	*res2;
+	int		match;
+
+	SET_STYLE(REGULAR, CYAN);
+	printf("src is \"%s\"\n\n", src);
+	res1 = strdup(src);
+	if (!res1)
+		return (ft_print_error(MALLOCFAIL));
+	res2 = ft_strdup(src);
+	if (!res2)
+	{
+		free(res1);
+		ft_leaks_check();
+		return (ft_print_error(MALLOCFAIL));
+	}
+	match = OK;
+	SET_STYLE(REGULAR, GREEN);
+	printf("strdup returns\t\t\"%s\" %p\n", res1, res1);
+	if (strcmp(res1, res2))
+	{
+		match = KO;
+		SET_STYLE(REGULAR, RED);
+	}
+	printf("ft_strdup returns\t\"%s\" %p\n", res2, res2);
+	free(res1);
+	free(res2);
+	ft_leaks_check();
+	return (match);
+}
+
+#define SUBSTR_STR "Here's my password: \"F|_|(|< y0(_)\""
+#define SUBSTR_START 11
+#define SUBSTR_LEN 3
+#define SUBSTR_SHOULD "ass"
+int	ft_check_substr(void)
+{
+	char	str[] = SUBSTR_STR;
+	char	should[] = SUBSTR_SHOULD;
+	char	*sub;
+	int		match;
+
+	sub = ft_substr(str, SUBSTR_START, SUBSTR_LEN);
+	if (!sub)
+		return (ft_print_error(MALLOCFAIL));
+	SET_STYLE(REGULAR, CYAN);
+	printf("str is\t\t\"%s\"\n\n", str);
+	printf("start = %d\tlen = %d\n", SUBSTR_START, SUBSTR_LEN);
+	SET_STYLE(REGULAR, GREEN);
+	printf("sub should be\t\"%s\"\n", should);
+	match = OK;
+	if (strcmp(sub, should))
+	{
+		match = KO;
+		SET_STYLE(REGULAR, RED);
+	}
+	printf("sub is\t\t\"%s\"\n", sub);
+	free(sub);
+	ft_leaks_check();
+	return (match);
+}
+
+#define STRJOIN_S1 "bon"
+#define STRJOIN_S2 "soir"
+#define STRJOIN_SHOULD "bonsoir"
+int	ft_check_strjoin(void)
+{
+	char	s1[] = STRJOIN_S1;
+	char	s2[] = STRJOIN_S2;
+	char	should[] = STRJOIN_SHOULD;
+	char	*res;
+	int		match;
+
+	res = ft_strjoin(s1, s2);
+	if (!res)
+		return (ft_print_error(MALLOCFAIL));
+	SET_STYLE(REGULAR, CYAN);
+	printf("s1 is\t\t\"%s\"\n", s1);
+	printf("s2 is\t\t\"%s\"\n\n", s2);
+	SET_STYLE(REGULAR, GREEN);
+	printf("res should be\t\"%s\"\n", should);
+	match = OK;
+	if (strcmp(res, should))
+	{
+		match = KO;
+		SET_STYLE(REGULAR, RED);
+	}
+	printf("res is\t\t\"%s\"\n", res);
+	free(res);
+	ft_leaks_check();
+	return (match);
+}
+
+#define STRTRIM_STR ". . . .-@1:25\"BONSOIR\"+1:32$. . . ."
+#define STRTRIM_SET ". -+@$;:\'\"\\/|<>0123456789"
+#define STRTRIM_SHOULD "BONSOIR"
+int	ft_check_strtrim(void)
+{
+	char	str[] = STRTRIM_STR;
+	char	set[] = STRTRIM_SET;
+	char	should[] = STRTRIM_SHOULD;
+	char	*res;
+	int		match;
+
+	res = ft_strtrim(str, set);
+	if (!res)
+		return (ft_print_error(MALLOCFAIL));
+	SET_STYLE(REGULAR, CYAN);
+	printf("str is\t\t\"%s\"\n", str);
+	printf("set is\t\t\"%s\"\n\n", set);
+	SET_STYLE(REGULAR, GREEN);
+	printf("res should be\t\"%s\"\n", should);
+	match = OK;
+	if (strcmp(res, should))
+	{
+		match = KO;
+		SET_STYLE(REGULAR, RED);
+	}
+	printf("res is\t\t\"%s\"\n", res);
+	free(res);
+	ft_leaks_check();
+	return (match);
+}
+
+#define SPLIT_STR "   BUYIT USEIT BREAKIT FIXIT   TRASHIT CHANGEIT MAIL- UPGRADEIT   "
+#define SPLIT_CHAR ' '
+int	ft_check_split(void)
+{
+	char	str[] = SPLIT_STR;
+	char	c = SPLIT_CHAR;
+	char	**res;
+	int		i;
+
+	res = ft_split(str, c);
+	if (!res)
+		return (ft_print_error(MALLOCFAIL));
+	SET_STYLE(REGULAR, CYAN);
+	printf("str is\t\t\"%s\"\n", str);
+	printf("c is\t\t\'%c\'\n\n", c);
+	SET_STYLE(REGULAR, GREEN);
+	i = 0;
+	while (res[i])
+	{
+		printf("res[%d] is\t\"%s\"\n", i, res[i]);
+		i++;
+	}
+	i = 0;
+	while (res[i])
+		free(res[i++]);
+	free(res);
+	ft_leaks_check();
+	return (OK);
+}
+
+#define ITOA_STR "2147483647"
+#define ITOA_NB atoi(ITOA_STR)
+int	ft_check_itoa(void)
+{
+	char	str[] = ITOA_STR;
+	int		nb = ITOA_NB;
+	char	*res;
+	int		match;
+
+	res = ft_itoa(nb);
+	if (!res)
+		return (ft_print_error(MALLOCFAIL));
+	SET_STYLE(REGULAR, CYAN);
+	printf("nb is\t\t%d\n\n", nb);
+	SET_STYLE(REGULAR, GREEN);
+	printf("res should be\t\"%d\"\n", nb);
+	match = OK;
+	if (strcmp(res, str))
+	{
+		match = KO;
+		SET_STYLE(REGULAR, RED);
+	}
+	printf("res is\t\t\"%s\"\n", res);
+	free(res);
+	ft_leaks_check();
+	return (match);
+}
+
 int	ft_check_putchar_fd(void)
 {
 	char	c;
@@ -941,13 +1215,16 @@ void	ft_print_final_result(int nb)
 	RESET_STYLE;
 }
 
-int	main(void)
+int	main(int ac, char **av)
 {
 	int		nb_succ;
 	int		(*ft_check[NB_TESTS])(void);
 	char	*titles[NB_TESTS];
 	int		i;
+	int		test;
 
+	if (ac > 2)
+		return (ft_print_error(EXTRARG));
 	ft_check[0] = ISALPHA;
 	ft_check[1] = ISDIGIT;
 	ft_check[2] = ISALNUM;
@@ -1017,13 +1294,24 @@ int	main(void)
 	titles[32] = "PUTENDL_FD";
 	titles[33] = "PUTNBR_FD";
 	nb_succ = 0;
-	SET_STYLE(REGULAR, CYAN);
-	printf("There are %d tests.\n", NB_TESTS);
-	i = -1;
-	while (++i < NB_TESTS)
+	if (ac == 2)
 	{
-		ft_print_title(titles[i]);
-		nb_succ += ft_print_check_result((*ft_check[i])());
+		test = atoi(av[1]);
+		if (test >= NB_TESTS)
+			return (ft_print_error(NOTEST));
+		ft_print_title(titles[test]);
+		nb_succ += ft_print_check_result((*ft_check[test])());
+	}
+	else
+	{
+		SET_STYLE(REGULAR, CYAN);
+		printf("There are %d tests.\n", NB_TESTS);
+		i = -1;
+		while (++i < NB_TESTS)
+		{
+			ft_print_title(titles[i]);
+			nb_succ += ft_print_check_result((*ft_check[i])());
+		}
 	}
 	ft_print_final_result(nb_succ);
 	return (0);
