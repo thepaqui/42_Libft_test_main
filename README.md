@@ -10,6 +10,9 @@ I don't plan on updating this after I validate this project, but feel free to ta
 HOW TO USE:
 
 Compile this main with your own libft.a and run ./a.out
+
 Running ./a.out will test everything (bonus functions included)
+
 Running it with a test code will only test the function associated with the code.
+
 To know the codes, check out test_codes.txt
