@@ -6,7 +6,7 @@
 /*   By: thepaqui <thepaqui@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/07 14:23:05 by thepaqui          #+#    #+#             */
-/*   Updated: 2022/11/11 18:20:42 by thepaqui         ###   ########.fr       */
+/*   Updated: 2022/11/13 16:34:38 by thepaqui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "libft.h"
@@ -81,8 +81,8 @@
 #define STRJOIN ft_check_strjoin
 #define STRTRIM ft_check_strtrim
 #define SPLIT ft_check_split
-#define STRMAPI placeholder
-#define STRITERI placeholder
+#define STRMAPI ft_check_strmapi
+#define STRITERI ft_check_striteri
 
 //text display 4
 #define PUTCHAR_FD ft_check_putchar_fd
@@ -99,17 +99,18 @@ int	placeholder(void)
 	return (OK);
 }
 
-int	ft_print_error(int code);
+int	ft_print_error(int code, int test);
 
 #define TEST_CODES "test_codes.txt"
-int	ft_print_test_codes(int code)
+void	ft_print_test_codes(void)
 {
 	FILE	*f;
 	char	c;
 
 	f = fopen(TEST_CODES, "r");
 	if (!f)
-		return (ft_print_error(NOTESTCODES));
+		ft_print_error(NOTESTCODES, 69);
+	printf("\n");
 	c = fgetc(f);
 	while (c != EOF)
 	{
@@ -117,23 +118,23 @@ int	ft_print_test_codes(int code)
 		c = fgetc(f);
 	}
 	fclose(f);
-	return (code + 1);
 }
 
-int	ft_print_error(int code)
+int	ft_print_error(int code, int test)
 {
 	char	*err_msgs[NB_ERR];
 
-	err_msgs[NOTEST] = "This test doesn't exist";
+	err_msgs[NOTEST] = "";
 	err_msgs[EXTRARG] = "Too many arguments";
 	err_msgs[MALLOCFAIL] = "Memory allocation failed";
 	err_msgs[WRONG_FD] = "Wrong file descriptor";
 	err_msgs[NOTESTCODES] = "Test codes file couldn't be opened";
 	SET_STYLE(BOLD, RED);
-	printf("ERROR: %s.\n", err_msgs[code]);
+	if (code == NOTEST)
+		printf("\nERROR: Test number %d doesn't exist.\n", test);
+	else
+		printf("\nERROR: %s.\n", err_msgs[code]);
 	RESET_STYLE;
-	if (code == NOTEST || code == EXTRARG)
-		return (ft_print_test_codes(code));
 	return (code + 1);
 }
 
@@ -477,13 +478,13 @@ int	ft_check_memset(void)
 
 	str1 = strdup(MEMSET_STR);
 	if (!str1)
-		return (ft_print_error(MALLOCFAIL));
+		return (ft_print_error(MALLOCFAIL, 69));
 	str2 = strdup(MEMSET_STR);
 	if (!str2)
 	{
 		free(str1);
 		ft_leaks_check();
-		return (ft_print_error(MALLOCFAIL));
+		return (ft_print_error(MALLOCFAIL, 69));
 	}
 	SET_STYLE(REGULAR, CYAN);
 	printf("str1: \"%s\"\t\tstr2: \"%s\"\n", str1, str2);
@@ -510,13 +511,13 @@ int	ft_check_bzero(void)
 
 	str1 = strdup(BZERO_STR);
 	if (!str1)
-		return (ft_print_error(MALLOCFAIL));
+		return (ft_print_error(MALLOCFAIL, 69));
 	str2 = strdup(BZERO_STR);
 	if (!str2)
 	{
 		free(str1);
 		ft_leaks_check();
-		return (ft_print_error(MALLOCFAIL));
+		return (ft_print_error(MALLOCFAIL, 69));
 	}
 	SET_STYLE(REGULAR, CYAN);
 	printf("str1: \"%s\"\tstr2: \"%s\"\n", str1, str2);
@@ -545,13 +546,13 @@ int	ft_check_memcpy(void)
 
 	src = strdup(MEMCPY_STR);
 	if (!src)
-		return (ft_print_error(MALLOCFAIL));
+		return (ft_print_error(MALLOCFAIL, 69));
 	dst = malloc(sizeof(*dst) * MEMCPY_STRLEN);
 	if (!dst)
 	{
 		free(src);
 		ft_leaks_check();
-		return (ft_print_error(MALLOCFAIL));
+		return (ft_print_error(MALLOCFAIL, 69));
 	}
 	memcpy(dst, src, MEMCPY_BYTES);
 	SET_STYLE(REGULAR, CYAN);
@@ -562,13 +563,13 @@ int	ft_check_memcpy(void)
 	free(dst);
 	src2 = strdup(MEMCPY_STR);
 	if (!src2)
-		return (ft_print_error(MALLOCFAIL));
+		return (ft_print_error(MALLOCFAIL, 69));
 	dst2 = malloc(sizeof(*dst2) * MEMCPY_STRLEN);
 	if (!dst2)
 	{
 		free(src2);
 		ft_leaks_check();
-		return (ft_print_error(MALLOCFAIL));
+		return (ft_print_error(MALLOCFAIL, 69));
 	}
 	ft_memcpy(dst2, src2, MEMCPY_BYTES);
 	SET_STYLE(REGULAR, CYAN);
@@ -594,7 +595,7 @@ int	ft_check_memmove(void)
 
 	src = strdup(MEMMOV_STR);
 	if (!src)
-		return (ft_print_error(MALLOCFAIL));
+		return (ft_print_error(MALLOCFAIL, 420));
 	dst = src + MEMMOV_OFFSET;
 	SET_STYLE(REGULAR, CYAN);
 	printf("MEMMOV\n\n");
@@ -605,7 +606,7 @@ int	ft_check_memmove(void)
 	free(src);
 	src2 = strdup(MEMMOV_STR);
 	if (!src2)
-		return (ft_print_error(MALLOCFAIL));
+		return (ft_print_error(MALLOCFAIL, 13));
 	dst2 = src2 + MEMMOV_OFFSET;
 	SET_STYLE(REGULAR, CYAN);
 	printf("FT_MEMMOV\n\n");
@@ -881,13 +882,13 @@ int	ft_check_calloc(void)
 	printf("of %d bytes each\n\n", CALLOC_BYTES);
 	mem1 = (char *)calloc(CALLOC_COUNT, CALLOC_BYTES);
 	if (!mem1)
-		return (ft_print_error(MALLOCFAIL));
+		return (ft_print_error(MALLOCFAIL, -5));
 	mem2 = (char *)ft_calloc(CALLOC_COUNT, CALLOC_BYTES);
 	if (!mem2)
 	{
 		free(mem1);
 		ft_leaks_check();
-		return (ft_print_error(MALLOCFAIL));
+		return (ft_print_error(MALLOCFAIL, 2147483647));
 	}
 	match = OK;
 	if (memcmp(mem1, mem2, CALLOC_BYTES * CALLOC_COUNT))
@@ -919,13 +920,13 @@ int	ft_check_strdup(void)
 	printf("src is \"%s\"\n\n", src);
 	res1 = strdup(src);
 	if (!res1)
-		return (ft_print_error(MALLOCFAIL));
+		return (ft_print_error(MALLOCFAIL, 666));
 	res2 = ft_strdup(src);
 	if (!res2)
 	{
 		free(res1);
 		ft_leaks_check();
-		return (ft_print_error(MALLOCFAIL));
+		return (ft_print_error(MALLOCFAIL, 333));
 	}
 	match = OK;
 	SET_STYLE(REGULAR, GREEN);
@@ -955,7 +956,7 @@ int	ft_check_substr(void)
 
 	sub = ft_substr(str, SUBSTR_START, SUBSTR_LEN);
 	if (!sub)
-		return (ft_print_error(MALLOCFAIL));
+		return (ft_print_error(MALLOCFAIL, 2));
 	SET_STYLE(REGULAR, CYAN);
 	printf("str is\t\t\"%s\"\n\n", str);
 	printf("start = %d\tlen = %d\n", SUBSTR_START, SUBSTR_LEN);
@@ -986,7 +987,7 @@ int	ft_check_strjoin(void)
 
 	res = ft_strjoin(s1, s2);
 	if (!res)
-		return (ft_print_error(MALLOCFAIL));
+		return (ft_print_error(MALLOCFAIL, 13));
 	SET_STYLE(REGULAR, CYAN);
 	printf("s1 is\t\t\"%s\"\n", s1);
 	printf("s2 is\t\t\"%s\"\n\n", s2);
@@ -1017,7 +1018,7 @@ int	ft_check_strtrim(void)
 
 	res = ft_strtrim(str, set);
 	if (!res)
-		return (ft_print_error(MALLOCFAIL));
+		return (ft_print_error(MALLOCFAIL, 1337));
 	SET_STYLE(REGULAR, CYAN);
 	printf("str is\t\t\"%s\"\n", str);
 	printf("set is\t\t\"%s\"\n\n", set);
@@ -1046,7 +1047,7 @@ int	ft_check_split(void)
 
 	res = ft_split(str, c);
 	if (!res)
-		return (ft_print_error(MALLOCFAIL));
+		return (ft_print_error(MALLOCFAIL, 42));
 	SET_STYLE(REGULAR, CYAN);
 	printf("str is\t\t\"%s\"\n", str);
 	printf("c is\t\t\'%c\'\n\n", c);
@@ -1076,13 +1077,80 @@ int	ft_check_itoa(void)
 
 	res = ft_itoa(nb);
 	if (!res)
-		return (ft_print_error(MALLOCFAIL));
+		return (ft_print_error(MALLOCFAIL, 24));
 	SET_STYLE(REGULAR, CYAN);
 	printf("nb is\t\t%d\n\n", nb);
 	SET_STYLE(REGULAR, GREEN);
 	printf("res should be\t\"%d\"\n", nb);
 	match = OK;
 	if (strcmp(res, str))
+	{
+		match = KO;
+		SET_STYLE(REGULAR, RED);
+	}
+	printf("res is\t\t\"%s\"\n", res);
+	free(res);
+	ft_leaks_check();
+	return (match);
+}
+
+char	ft_strmapi_help(unsigned int i, char c)
+{
+	return (c + i);
+}
+
+#define STRMAPI_STR "1214"
+#define STRMAPI_SHOULD "1337"
+int	ft_check_strmapi(void)
+{
+	char	str[] = STRMAPI_STR;
+	char	should[] = STRMAPI_SHOULD;
+	char	*res;
+	int		match;
+
+	res = ft_strmapi(str, &ft_strmapi_help);
+	if (!res)
+		return (ft_print_error(MALLOCFAIL, 7331));
+	SET_STYLE(REGULAR, CYAN);
+	printf("str is\t\t\"%s\"\n\n", str);
+	SET_STYLE(REGULAR, GREEN);
+	printf("res should be\t\"%s\"\n", should);
+	match = OK;
+	if (strcmp(res, should))
+	{
+		match = KO;
+		SET_STYLE(REGULAR, RED);
+	}
+	printf("res is\t\t\"%s\"\n", res);
+	free(res);
+	ft_leaks_check();
+	return (match);
+}
+
+void	ft_striteri_help(unsigned int i, char *c)
+{
+	*c = i + 1 + *c;
+}
+
+#define STRITERI_STR "[ELJB;@9&"
+#define STRITERI_SHOULD "\\GONGAGA/"
+int	ft_check_striteri(void)
+{
+	char	str[] = STRITERI_STR;
+	char	should[] = STRITERI_SHOULD;
+	char	*res;
+	int		match;
+
+	res = strdup(str);
+	if (!res)
+		return (ft_print_error(MALLOCFAIL, 21));
+	ft_striteri(res, &ft_striteri_help);
+	SET_STYLE(REGULAR, CYAN);
+	printf("str is\t\t\"%s\"\n\n", str);
+	SET_STYLE(REGULAR, GREEN);
+	printf("res should be\t\"%s\"\n", should);
+	match = OK;
+	if (strcmp(res, should))
 	{
 		match = KO;
 		SET_STYLE(REGULAR, RED);
@@ -1222,9 +1290,8 @@ int	main(int ac, char **av)
 	char	*titles[NB_TESTS];
 	int		i;
 	int		test;
+	int		print;
 
-	if (ac > 2)
-		return (ft_print_error(EXTRARG));
 	ft_check[0] = ISALPHA;
 	ft_check[1] = ISDIGIT;
 	ft_check[2] = ISALNUM;
@@ -1294,13 +1361,23 @@ int	main(int ac, char **av)
 	titles[32] = "PUTENDL_FD";
 	titles[33] = "PUTNBR_FD";
 	nb_succ = 0;
-	if (ac == 2)
+	if (ac >= 2)
 	{
-		test = atoi(av[1]);
-		if (test >= NB_TESTS)
-			return (ft_print_error(NOTEST));
-		ft_print_title(titles[test]);
-		nb_succ += ft_print_check_result((*ft_check[test])());
+		i = 0;
+		print = 0;
+		while (++i < ac)
+		{
+			test = atoi(av[i]);
+			if (test >= NB_TESTS)
+				print = ft_print_error(NOTEST, test);
+			else
+			{
+				ft_print_title(titles[test]);
+				nb_succ += ft_print_check_result((*ft_check[test])());
+			}
+		}
+		if (print)
+			ft_print_test_codes();
 	}
 	else
 	{
