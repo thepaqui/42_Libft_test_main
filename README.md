@@ -18,3 +18,5 @@ Running the program without arguments will test everything.
 Running it with one or more test codes as arguments will only test the functions associated with the codes.
 
 To know the test codes, check out test_codes.txt.
+
+The tests are easily modifiable with defines, however the length of the file might be a problem... (The tests are in the same order as the test codes)
