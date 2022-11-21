@@ -9,7 +9,7 @@ I don't plan on updating this aymore, but feel free to take this code and custom
 
 
 
-HOW TO USE:
+# How to use
 
 Compile this main with your own libft.a and run your program.
 
